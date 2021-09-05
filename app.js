@@ -1,5 +1,7 @@
-// create local array object of dinosaur data:
-const dinoData = [
+// GLOBAL VARIABLES ///////////////////////////////////
+let human = {};  // default blank human object
+let dinos = [];  // array to store dino objects
+const dinoData = [ // array of dinosaur details
   {
     species: "Triceratops",
     weight: 13000,
@@ -74,7 +76,7 @@ const dinoData = [
   },
 ];
 
-// define relevant classes:
+// CLASS CREATION ////////////////////////////////////////
 class Dino {
   constructor(species, weight, height, diet, where, when, fact, index) {
     this.species = species;
@@ -88,23 +90,29 @@ class Dino {
     this.index = index;
   }
 
+  // add 2 new facts based on the where and when properties:
   addFacts() {
     this.facts.push(`This type of dinosaur was chilling in ${this.where}.`);
-    this.facts.push(`This type of dinosaur roamed the earth in the ${this.when} period.`);
+    this.facts.push(
+      `This type of dinosaur roamed the earth in the ${this.when} period.`
+    );
   }
 
+  // compare human weight to dino weight and add to facts:
   compareWeight(human) {
     const ratio = Math.round(this.weight / human.weight);
     const fact = `This dinosaur weighed ${ratio}x more than your fatass`;
     this.facts.push(fact);
   }
 
+  // compare human height to dino height and add to facts:
   compareHeight(human) {
     const ratio = Math.round(this.height / human.height);
     const fact = `This dinosaur was ${ratio}x taller than you, shorty.`;
     this.facts.push(fact);
   }
 
+  // compare the human's diet to the dino and add a stmt to the facts:
   compareDiet(human) {
     let fact = "";
     if (this.diet === human.diet) {
@@ -114,47 +122,36 @@ class Dino {
         "This guy showed respect for animals and just ate plants...unlike your selfish ass.";
     } else if (this.diet === "Carnivore" && human.diet === "Herbivore") {
       fact = "This MF ate meat like a man, unlike your bitch-ass.";
-    } else if (human.diet == "Omnivore"){
-        if (this.diet === 'Carnivore') {
-            fact =
-            "This guy just ate meat and didn't fuck with plants like you do sometimes.";
-        }
-        else {
-            fact = "This guy just ate plants and didn't fuck with meat like you do sometimes.";
-        }
-
+    } else if (human.diet == "Omnivore") {
+      if (this.diet === "Carnivore") {
+        fact =
+          "This guy just ate meat and didn't fuck with plants like you do sometimes.";
+      } else {
+        fact =
+          "This guy just ate plants and didn't fuck with meat like you do sometimes.";
+      }
     }
     this.facts.push(fact);
   }
 }
 
-class Human {
-  constructor(name, weight, height, diet) {
-    this.name = name;
-    this.weight = weight;
-    this.height = height;
-    this.diet = diet;
-    this.index = 4;
-  }
-}
 
-// Create Dino Objects
-let dinos = [];
-
+// FUNCTIONS ////////////////////////////////////////
 function makeDinos() {
   // create an array of random numbers, from 0 to 8, excluding 4
   // index 4 is the center tile in a grid of 3x3 and is reserved for the human tile
   let indices = [];
   while (indices.length < dinoData.length) {
-      let index = Math.floor(Math.random() * dinoData.length);
-      // if the random num is 4, replace it with 8 instead:
-      if (index === 4) index = dinoData.length;
-      // if the index returned from indexOf is -1, that means the number (index) wasn't found and thus can be added to the array:
-      if (indices.indexOf(index) === -1) indices.push(index);
+    let index = Math.floor(Math.random() * dinoData.length);
+    // if the random num is 4, replace it with 8 instead:
+    if (index === 4) index = dinoData.length;
+    // if the index returned from indexOf is -1, that means the number (index) wasn't found and thus can be added to the array:
+    if (indices.indexOf(index) === -1) indices.push(index);
   }
 
   for (let i = 0; i < dinoData.length; i++) {
     const d = dinoData[i];
+    // create Dino object:
     const dino = new Dino(
       d.species,
       d.weight,
@@ -165,41 +162,19 @@ function makeDinos() {
       d.fact,
       indices[i]
     );
-    if (dino.species !== 'Pigeon') {
-        dino.compareDiet(human);
-        dino.compareHeight(human);
-        dino.compareWeight(human);
-        dino.addFacts();
+    // if pigeon, don't add additional facts:
+    if (dino.species !== "Pigeon") {
+      dino.compareDiet(human);
+      dino.compareHeight(human);
+      dino.compareWeight(human);
+      dino.addFacts();
     }
+    // add new dino to the dinos array:
     dinos.push(dino);
   }
 }
 
-// Create Human object:
-let human = new Human("blank", 0, 0, "blank");
-
-function buttonClick(e) {
-    e.preventDefault();
-
-    let name = document.querySelector("#name").value;
-    let height1 = parseInt(document.querySelector("#height1").value); // feet
-    let height2 = parseInt(document.querySelector("#height2").value); // inches
-    let weight = parseInt(document.querySelector("#weight").value); // lbs
-    let diet = document.querySelector("#diet").value;
-  
-    let height = height1 * 12 + height2;
-  
-    if (name === '' || isNaN(height) || isNaN(weight) || diet === '') {
-        alert('Fill out all the inputs you filthy animal...');
-    } 
-    else {
-        updateHuman(name, height, weight, diet);
-        hideForm();
-        makeDinos();
-        displayGrid();  
-    }
-}
-
+// updates the human object:
 function updateHuman(name, height, weight, diet) {
   human.name = name;
   human.height = height;
@@ -207,18 +182,25 @@ function updateHuman(name, height, weight, diet) {
   human.diet = diet;
 }
 
+// hides the input form:
 function hideForm() {
   let formContainer = document.querySelector(".form-container");
   formContainer.style.display = "none";
 }
 
+// displays grid of dinosaurs
 function displayGrid() {
-  let grid = document.querySelector("#grid");
-  grid.innerHTML = '';
+  // find grid element in html and reset inner html to blank:
+    let grid = document.querySelector("#grid");
+  grid.innerHTML = "";
 
-  let randBtnForm = document.querySelector('#randomize-form');
-  randBtnForm.style.display = 'block';
+  // show the randomize facts button:
+  let randBtnForm = document.querySelector("#randomize-form");
+  randBtnForm.style.display = "block";
+
+  // for each grid item (9)
   for (let i = 0; i < 9; i++) {
+    // the 5th grid item (center) should always be the human
     if (i === 4) {
       grid.innerHTML += `
         <div class='grid-item'>
@@ -230,14 +212,13 @@ function displayGrid() {
             </p>
         </div>
       `;
-    } 
-    else if (
-      dinos.findIndex(dino => {
-        dino.index === i;
-      })
-    ) {
-      let index = dinos.findIndex((dino) => dino.index === i);
+    }
+      // otherwise the grid item is a dino
+      // look up the dino index and create a grid tile
+        else {
+      let index = dinos.findIndex(dino => dino.index === i);
       let dino = dinos[index];
+      // create a random # b/w 0 and 6 to get a random fino fact
       let randNum = Math.floor(Math.random() * dino.facts.length);
       grid.innerHTML += `
             <div class='grid-item'>
@@ -250,32 +231,37 @@ function displayGrid() {
   }
 }
 
+// reset array of dino objects to blank and repopulate it with new random data:
 function randomizeFacts(e) {
-    dinos = [];
-    buttonClick(e);
+  dinos = [];
+  buttonClick(e);
 }
 
+// grabs input data, updates human object, populates grid of dinos, hides input form and shows grid:
+function buttonClick(e) {
+    e.preventDefault();
+  
+    let name = document.querySelector("#name").value;
+    let height1 = parseInt(document.querySelector("#height1").value); // feet
+    let height2 = parseInt(document.querySelector("#height2").value); // inches
+    let weight = parseInt(document.querySelector("#weight").value); // lbs
+    let diet = document.querySelector("#diet").value;
+  
+    let height = height1 * 12 + height2;
+  
+    if (name === "" || isNaN(height) || isNaN(weight) || diet === "") {
+      alert("Fill out all the inputs you filthy animal...");
+    } else {
+      updateHuman(name, height, weight, diet);
+      hideForm();
+      makeDinos();
+      displayGrid();
+    }
+  }
+
+  // EVENT LISTENERS ///////////////////////////////////////
 const btn = document.querySelector("#btn");
 btn.addEventListener("click", buttonClick);
 
-const randBtn = document.querySelector('#randBtn');
-randBtn.addEventListener("click", randomizeFacts)
-
-// Use IIFE to get human data from form
-
-// Create Dino Compare Method 1
-// NOTE: Weight in JSON file is in lbs, height in inches.
-
-// Create Dino Compare Method 2
-// NOTE: Weight in JSON file is in lbs, height in inches.
-
-// Create Dino Compare Method 3
-// NOTE: Weight in JSON file is in lbs, height in inches.
-
-// Generate Tiles for each Dino in Array
-
-// Add tiles to DOM
-
-// Remove form from screen
-
-// On button click, prepare and display infographic
+const randBtn = document.querySelector("#randBtn");
+randBtn.addEventListener("click", randomizeFacts);
