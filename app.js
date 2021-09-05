@@ -1,4 +1,3 @@
-
 // create local array object of dinosaur data:
 const dinoData = [
   {
@@ -102,73 +101,92 @@ class Human {
 
 // Create Dino Objects
 let dinos = [];
+let index = 0;
 for (let i = 0; i < dinoData.length; i++) {
-    const d = dinoData[i];
-    let index = 0;
-    if (index === 4) { index++; }
-    const dino = new Dino(
-      d.species,
-      d.weight,
-      d.height,
-      d.diet,
-      d.where,
-      d.when,
-      d.fact,
-      index
-    );
-    dinos.push(dino);
+  const d = dinoData[i];
+  if (index === 4) {
     index++;
-  }  
+  }
+  const dino = new Dino(
+    d.species,
+    d.weight,
+    d.height,
+    d.diet,
+    d.where,
+    d.when,
+    d.fact,
+    index
+  );
+  dinos.push(dino);
+  index++;
+}
 
 // Create Human object:
-let human = new Human ('blank', 0, 0, 'blank');
+let human = new Human("blank", 0, 0, "blank");
 
 function updateHuman(e) {
-    e.preventDefault();
-    let name = document.querySelector('#name').value;
-    let height1 = parseInt(document.querySelector('#height1').value); // feet
-    let height2 = parseInt(document.querySelector('#height2').value); // inches
-    let weight = parseInt(document.querySelector('#weight').value); // lbs
-    let diet = document.querySelector('#diet').value;
+  e.preventDefault();
+  let name = document.querySelector("#name").value;
+  let height1 = parseInt(document.querySelector("#height1").value); // feet
+  let height2 = parseInt(document.querySelector("#height2").value); // inches
+  let weight = parseInt(document.querySelector("#weight").value); // lbs
+  let diet = document.querySelector("#diet").value;
 
-    let height = height1 * 12 + height2;
+  let height = height1 * 12 + height2;
 
-    human.name = name;
-    human.height = height;
-    human.weight = weight;
-    human.diet = diet;
-    
-    console.log(human);
+  human.name = name;
+  human.height = height;
+  human.weight = weight;
+  human.diet = diet;
 
-    hideForm();
-    displayGrid();
+  console.log(human);
+
+  hideForm();
+  displayGrid();
 }
 
 function hideForm() {
-    let formContainer = document.querySelector('.form-container');
-    formContainer.style.display = 'none';
+  let formContainer = document.querySelector(".form-container");
+  formContainer.style.display = "none";
 }
 
 function displayGrid() {
-    let grid = document.querySelector('#grid');
-    grid.innerHTML = dinos.map((dino) => {
-        return `
+  let grid = document.querySelector("#grid");
+  // grid.innerHTML = dinos.map((dino) => {
+  //     return `
+  //         <div class='grid-item'>
+  //             <h3>${dino.species}</h3>
+  //             <img src="${dino.img}" alt="${dino.species}">
+  //             <p>${dino.fact}</p>
+  //         </div>
+  //     `
+  // }).join('');
+
+  for (let i = 0; i < 9; i++) {
+    if (i === 4) {
+        grid.innerHTML += `
+        <div class='grid-item'>
+            <h3>${human.name}</h3>
+            <img src="./images/human.png" alt="human">
+        </div>
+      `;
+    } 
+    else if ( dinos.findIndex(dino => {dino.index === i }) ) {
+        let index = dinos.findIndex(dino => dino.index === i );
+        let dino = dinos[index];
+        grid.innerHTML += `
             <div class='grid-item'>
                 <h3>${dino.species}</h3>
                 <img src="${dino.img}" alt="${dino.species}">
                 <p>${dino.fact}</p>
             </div>
-        `
-    }).join('');
-    
-    // dinos.forEach(dino => {
-
-    // });
-
+        `;
+    }
+  }
 }
 
 const btn = document.querySelector("#btn");
-btn.addEventListener('click', updateHuman);
+btn.addEventListener("click", updateHuman);
 
 // Use IIFE to get human data from form
 
