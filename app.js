@@ -124,7 +124,6 @@ class Dino {
         }
 
     }
-    console.log(this.diet, human.diet);
     this.facts.push(fact);
   }
 }
@@ -143,12 +142,19 @@ class Human {
 let dinos = [];
 
 function makeDinos() {
-  let index = 0;
+  // create an array of random numbers, from 0 to 8, excluding 4
+  // index 4 is the center tile in a grid of 3x3 and is reserved for the human tile
+  let indices = [];
+  while (indices.length < dinoData.length) {
+      let index = Math.floor(Math.random() * dinoData.length);
+      // if the random num is 4, replace it with 8 instead:
+      if (index === 4) index = dinoData.length;
+      // if the index returned from indexOf is -1, that means the number (index) wasn't found and thus can be added to the array:
+      if (indices.indexOf(index) === -1) indices.push(index);
+  }
+
   for (let i = 0; i < dinoData.length; i++) {
     const d = dinoData[i];
-    if (index === 4) {
-      index++;
-    }
     const dino = new Dino(
       d.species,
       d.weight,
@@ -157,7 +163,7 @@ function makeDinos() {
       d.where,
       d.when,
       d.fact,
-      index
+      indices[i]
     );
     if (dino.species !== 'Pigeon') {
         dino.compareDiet(human);
@@ -166,7 +172,6 @@ function makeDinos() {
         dino.addFacts();
     }
     dinos.push(dino);
-    index++;
   }
 }
 
@@ -200,8 +205,6 @@ function updateHuman(name, height, weight, diet) {
   human.height = height;
   human.weight = weight;
   human.diet = diet;
-
-  console.log(human);
 }
 
 function hideForm() {
