@@ -4,7 +4,7 @@ const dinoData = [
     species: "Triceratops",
     weight: 13000,
     height: 114,
-    diet: "herbavor",
+    diet: "Herbivore",
     where: "North America",
     when: "Late Cretaceous",
     fact: "First discovered in 1889 by Othniel Charles Marsh",
@@ -13,7 +13,7 @@ const dinoData = [
     species: "Tyrannosaurus Rex",
     weight: 11905,
     height: 144,
-    diet: "carnivor",
+    diet: "Carnivore",
     where: "North America",
     when: "Late Cretaceous",
     fact: "The largest known skull measures in at 5 feet long.",
@@ -22,7 +22,7 @@ const dinoData = [
     species: "Anklyosaurus",
     weight: 10500,
     height: 55,
-    diet: "herbavor",
+    diet: "Herbivore",
     where: "North America",
     when: "Late Cretaceous",
     fact: "Anklyosaurus survived for approximately 135 million years.",
@@ -31,7 +31,7 @@ const dinoData = [
     species: "Brachiosaurus",
     weight: 70000,
     height: "372",
-    diet: "herbavor",
+    diet: "Herbivore",
     where: "North America",
     when: "Late Jurasic",
     fact: "An asteroid was named 9954 Brachiosaurus in 1991.",
@@ -40,7 +40,7 @@ const dinoData = [
     species: "Stegosaurus",
     weight: 11600,
     height: 79,
-    diet: "herbavor",
+    diet: "Herbivore",
     where: "North America, Europe, Asia",
     when: "Late Jurasic to Early Cretaceous",
     fact: "The Stegosaurus had between 17 and 22 seperate plates and flat spines.",
@@ -49,7 +49,7 @@ const dinoData = [
     species: "Elasmosaurus",
     weight: 16000,
     height: 59,
-    diet: "carnivor",
+    diet: "Carnivore",
     where: "North America",
     when: "Late Cretaceous",
     fact: "Elasmosaurus was a marine reptile first discovered in Kansas.",
@@ -58,7 +58,7 @@ const dinoData = [
     species: "Pteranodon",
     weight: 44,
     height: 20,
-    diet: "carnivor",
+    diet: "Carnivore",
     where: "North America",
     when: "Late Cretaceous",
     fact: "Actually a flying reptile, the Pteranodon is not a dinosaur.",
@@ -67,7 +67,7 @@ const dinoData = [
     species: "Pigeon",
     weight: 0.5,
     height: 9,
-    diet: "herbavor",
+    diet: "Herbivore",
     where: "World Wide",
     when: "Holocene",
     fact: "All birds are living dinosaurs.",
@@ -109,15 +109,22 @@ class Dino {
     let fact = "";
     if (this.diet === human.diet) {
       fact = "This MF ate the same shit as you do (and went extinct).";
-    } else if (this.diet === "herbivore" && human.diet === "carnivore") {
+    } else if (this.diet === "Herbivore" && human.diet === "Carnivore") {
       fact =
         "This guy showed respect for animals and just ate plants...unlike your selfish ass.";
-    } else if (this.diet === "carnivore" && human.diet === "herbivore") {
+    } else if (this.diet === "Carnivore" && human.diet === "Herbivore") {
       fact = "This MF ate meat like a man, unlike your bitch-ass.";
-    } else {
-      fact =
-        "Unlike you, this dino had a balanced diet of meat and veggies.";
+    } else if (human.diet == "Omnivore"){
+        if (this.diet === 'Carnivore') {
+            fact =
+            "This guy just ate meat and didn't fuck with plants like you do sometimes.";
+        }
+        else {
+            fact = "This guy just ate plants and didn't fuck with meat like you do sometimes.";
+        }
+
     }
+    console.log(this.diet, human.diet);
     this.facts.push(fact);
   }
 }
@@ -204,15 +211,6 @@ function hideForm() {
 
 function displayGrid() {
   let grid = document.querySelector("#grid");
-  // grid.innerHTML = dinos.map((dino) => {
-  //     return `
-  //         <div class='grid-item'>
-  //             <h3>${dino.species}</h3>
-  //             <img src="${dino.img}" alt="${dino.species}">
-  //             <p>${dino.fact}</p>
-  //         </div>
-  //     `
-  // }).join('');
 
   for (let i = 0; i < 9; i++) {
     if (i === 4) {
@@ -220,10 +218,15 @@ function displayGrid() {
         <div class='grid-item'>
             <h3>${human.name}</h3>
             <img src="./images/human.png" alt="human">
+            <p>
+              Height: ${human.height}in <br>
+              Weight: ${human.weight}lbs
+            </p>
         </div>
       `;
-    } else if (
-      dinos.findIndex((dino) => {
+    } 
+    else if (
+      dinos.findIndex(dino => {
         dino.index === i;
       })
     ) {
