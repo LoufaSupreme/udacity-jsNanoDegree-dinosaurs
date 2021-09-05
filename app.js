@@ -101,14 +101,22 @@ class Dino {
   // compare human weight to dino weight and add to facts:
   compareWeight(human) {
     const ratio = Math.round(this.weight / human.weight);
-    const fact = `This dinosaur weighed ${ratio}x more than your fatass`;
+    const fact = `This dinosaur weighed ${ratio}x more than your fatass!`;
     this.facts.push(fact);
   }
 
   // compare human height to dino height and add to facts:
   compareHeight(human) {
     const ratio = Math.round(this.height / human.height);
-    const fact = `This dinosaur was ${ratio}x taller than you, shorty.`;
+    let fact = '';
+    if (ratio === 0) {
+        fact = `This dino was ${human.height - this.height} shorter than you...`;
+    }
+    else if (ratio === 1) {
+        fact = 'This dino was about the same height as you!';
+    } else {
+        fact = `This dinosaur was ${ratio}x taller than you, shorty.`;
+    }
     this.facts.push(fact);
   }
 
@@ -188,6 +196,51 @@ function hideForm() {
   formContainer.style.display = "none";
 }
 
+// show dino specs:
+function dinoDetail() {
+    const species = this.querySelector('h3').innerHTML;
+    const dinoIndex = dinos.findIndex(dino => {
+        return dino.species === species;
+    });
+    if (dinoIndex === -1) {
+        return;
+    }
+    const dino = dinos[dinoIndex];
+    const specBox = document.querySelector('#specs');
+    specBox.innerHTML = `
+        <div class="specs-item">
+            <h3>${dino.species}</h3>
+            <ul>
+                <li>Typical Height: ${Math.floor(dino.height/12)}ft ${dino.height % 12}in</li>
+                <li>Typical Weight: ${dino.weight}lbs</li>
+                <li>Location: ${dino.where}</li>
+                <li>Period: ${dino.when}</li>
+                <li>Interesting Fact: ${dino.facts[0]}</li>
+            </ul>
+            <div class="img-container">
+                <div id="human-container" class="specs-img-container">
+                    <img src="./images/human.png" alt="human">
+                </div>
+                <div id="dino-container" class="specs-img-container">
+                    <img src="${dino.img}" alt="${dino.species}">
+                </div>
+            </div>
+        </div>
+    `;
+    // scale images to show relative size of dino:
+    const dinoPic = specBox.querySelector('#dino-container');
+    const humanPic = specBox.querySelector('#human-container');
+    const maxHeight = 100;
+    const ratio = human.height / dino.height;
+    if (dino.height > human.height) {
+        dinoPic.style.height = `${maxHeight}%`;
+        humanPic.style.height = `${maxHeight * ratio}%`;
+    } else {
+        humanPic.style.height = `${maxHeight}%`;
+        dinoPic.style.height = `${maxHeight / ratio}%`;
+    }
+}
+
 // displays grid of dinosaurs
 function displayGrid() {
   // find grid element in html and reset inner html to blank:
@@ -203,13 +256,15 @@ function displayGrid() {
     // the 5th grid item (center) should always be the human
     if (i === 4) {
       grid.innerHTML += `
-        <div class='grid-item'>
+        <div data-species="human" class='grid-item'>
             <h3>${human.name}</h3>
             <img src="./images/human.png" alt="human">
+            <!--
             <p>
-              Height: ${human.height}in <br>
-              Weight: ${human.weight}lbs
+              Height: ${human.height} in <br>
+              Weight: ${human.weight} lbs
             </p>
+            -->
         </div>
       `;
     }
@@ -229,6 +284,14 @@ function displayGrid() {
         `;
     }
   }
+  // add event listeners to each grid item and style cursor:
+    const gridItems = document.querySelectorAll('.grid-item');
+    gridItems.forEach(item => {
+        if (item.dataset.species !== 'human') {
+            item.addEventListener('click', dinoDetail);
+            item.style.cursor = 'pointer';
+        }
+    });
 }
 
 // reset array of dino objects to blank and repopulate it with new random data:
