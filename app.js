@@ -83,9 +83,42 @@ class Dino {
     this.diet = diet;
     this.where = where;
     this.when = when;
-    this.fact = fact;
+    this.facts = [fact];
     this.img = `./images/${this.species}.png`;
     this.index = index;
+  }
+
+  addFacts() {
+    this.facts.push(`This type of dinosaur was chilling in ${this.where}.`);
+    this.facts.push(`This type of dinosaur roamed the earth in the ${this.when} period.`);
+  }
+
+  compareWeight(human) {
+    const ratio = Math.round(this.weight / human.weight);
+    const fact = `This dinosaur weighed ${ratio}x more than your fatass`;
+    this.facts.push(fact);
+  }
+
+  compareHeight(human) {
+    const ratio = Math.round(this.height / human.height);
+    const fact = `This dinosaur was ${ratio}x taller than you, shorty.`;
+    this.facts.push(fact);
+  }
+
+  compareDiet(human) {
+    let fact = "";
+    if (this.diet === human.diet) {
+      fact = "This MF ate the same shit as you do (and went extinct).";
+    } else if (this.diet === "herbivore" && human.diet === "carnivore") {
+      fact =
+        "This guy showed respect for animals and just ate plants...unlike your selfish ass.";
+    } else if (this.diet === "carnivore" && human.diet === "herbivore") {
+      fact = "This MF ate meat like a man, unlike your bitch-ass.";
+    } else {
+      fact =
+        "Unlike you, this dino had a balanced diet of meat and veggies.";
+    }
+    this.facts.push(fact);
   }
 }
 
@@ -101,48 +134,67 @@ class Human {
 
 // Create Dino Objects
 let dinos = [];
-let index = 0;
-for (let i = 0; i < dinoData.length; i++) {
-  const d = dinoData[i];
-  if (index === 4) {
+
+function makeDinos() {
+  let index = 0;
+  for (let i = 0; i < dinoData.length; i++) {
+    const d = dinoData[i];
+    if (index === 4) {
+      index++;
+    }
+    const dino = new Dino(
+      d.species,
+      d.weight,
+      d.height,
+      d.diet,
+      d.where,
+      d.when,
+      d.fact,
+      index
+    );
+    if (dino.species !== 'Pigeon') {
+        dino.compareDiet(human);
+        dino.compareHeight(human);
+        dino.compareWeight(human);
+        dino.addFacts();
+    }
+    dinos.push(dino);
     index++;
   }
-  const dino = new Dino(
-    d.species,
-    d.weight,
-    d.height,
-    d.diet,
-    d.where,
-    d.when,
-    d.fact,
-    index
-  );
-  dinos.push(dino);
-  index++;
 }
 
 // Create Human object:
 let human = new Human("blank", 0, 0, "blank");
 
-function updateHuman(e) {
-  e.preventDefault();
-  let name = document.querySelector("#name").value;
-  let height1 = parseInt(document.querySelector("#height1").value); // feet
-  let height2 = parseInt(document.querySelector("#height2").value); // inches
-  let weight = parseInt(document.querySelector("#weight").value); // lbs
-  let diet = document.querySelector("#diet").value;
+function buttonClick(e) {
+    e.preventDefault();
 
-  let height = height1 * 12 + height2;
+    let name = document.querySelector("#name").value;
+    let height1 = parseInt(document.querySelector("#height1").value); // feet
+    let height2 = parseInt(document.querySelector("#height2").value); // inches
+    let weight = parseInt(document.querySelector("#weight").value); // lbs
+    let diet = document.querySelector("#diet").value;
+  
+    let height = height1 * 12 + height2;
+  
+    if (name === '' || isNaN(height) || isNaN(weight) || diet === '') {
+        alert('Fill out all the inputs you filthy animal...');
+    } 
+    else {
+        updateHuman(name, height, weight, diet);
+        hideForm();
+        makeDinos();
+        displayGrid();  
+    }
+}
 
+function updateHuman(name, height, weight, diet) {
   human.name = name;
   human.height = height;
   human.weight = weight;
   human.diet = diet;
 
   console.log(human);
-
-  hideForm();
-  displayGrid();
 }
 
 function hideForm() {
@@ -164,21 +216,25 @@ function displayGrid() {
 
   for (let i = 0; i < 9; i++) {
     if (i === 4) {
-        grid.innerHTML += `
+      grid.innerHTML += `
         <div class='grid-item'>
             <h3>${human.name}</h3>
             <img src="./images/human.png" alt="human">
         </div>
       `;
-    } 
-    else if ( dinos.findIndex(dino => {dino.index === i }) ) {
-        let index = dinos.findIndex(dino => dino.index === i );
-        let dino = dinos[index];
-        grid.innerHTML += `
+    } else if (
+      dinos.findIndex((dino) => {
+        dino.index === i;
+      })
+    ) {
+      let index = dinos.findIndex((dino) => dino.index === i);
+      let dino = dinos[index];
+      let randNum = Math.floor(Math.random() * dino.facts.length);
+      grid.innerHTML += `
             <div class='grid-item'>
                 <h3>${dino.species}</h3>
                 <img src="${dino.img}" alt="${dino.species}">
-                <p>${dino.fact}</p>
+                <p>${dino.facts[randNum]}</p>
             </div>
         `;
     }
@@ -186,7 +242,7 @@ function displayGrid() {
 }
 
 const btn = document.querySelector("#btn");
-btn.addEventListener("click", updateHuman);
+btn.addEventListener("click", buttonClick);
 
 // Use IIFE to get human data from form
 
