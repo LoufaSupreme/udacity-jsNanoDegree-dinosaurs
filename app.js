@@ -211,7 +211,10 @@ function hideForm() {
 
 function displayGrid() {
   let grid = document.querySelector("#grid");
+  grid.innerHTML = '';
 
+  let randBtnForm = document.querySelector('#randomize-form');
+  randBtnForm.style.display = 'block';
   for (let i = 0; i < 9; i++) {
     if (i === 4) {
       grid.innerHTML += `
@@ -244,8 +247,16 @@ function displayGrid() {
   }
 }
 
+function randomizeFacts(e) {
+    dinos = [];
+    buttonClick(e);
+}
+
 const btn = document.querySelector("#btn");
 btn.addEventListener("click", buttonClick);
+
+const randBtn = document.querySelector('#randBtn');
+randBtn.addEventListener("click", randomizeFacts)
 
 // Use IIFE to get human data from form
 
