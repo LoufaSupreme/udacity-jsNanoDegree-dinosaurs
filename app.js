@@ -110,7 +110,7 @@ class Dino {
     const ratio = Math.round(this.height / human.height);
     let fact = '';
     if (ratio === 0) {
-        fact = `This dino was ${human.height - this.height} shorter than you...`;
+        fact = `This dino was ${human.height - this.height}in shorter than you...`;
     }
     else if (ratio === 1) {
         fact = 'This dino was about the same height as you!';
