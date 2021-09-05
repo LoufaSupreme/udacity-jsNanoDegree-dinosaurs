@@ -77,7 +77,7 @@ const dinoData = [
 
 // define relevant classes:
 class Dino {
-  constructor(species, weight, height, diet, where, when, fact) {
+  constructor(species, weight, height, diet, where, when, fact, index) {
     this.species = species;
     this.weight = weight;
     this.height = height;
@@ -86,6 +86,7 @@ class Dino {
     this.when = when;
     this.fact = fact;
     this.img = `./images/${this.species}.png`;
+    this.index = index;
   }
 }
 
@@ -95,12 +96,16 @@ class Human {
     this.weight = weight;
     this.height = height;
     this.diet = diet;
+    this.index = 4;
   }
 }
 
 // Create Dino Objects
 let dinos = [];
-for (d of dinoData) {
+for (let i = 0; i < dinoData.length; i++) {
+    const d = dinoData[i];
+    let index = 0;
+    if (index === 4) { index++; }
     const dino = new Dino(
       d.species,
       d.weight,
@@ -108,9 +113,11 @@ for (d of dinoData) {
       d.diet,
       d.where,
       d.when,
-      d.fact
+      d.fact,
+      index
     );
     dinos.push(dino);
+    index++;
   }  
 
 // Create Human object:
@@ -152,7 +159,7 @@ function displayGrid() {
                 <p>${dino.fact}</p>
             </div>
         `
-    });
+    }).join('');
     
     // dinos.forEach(dino => {
 
