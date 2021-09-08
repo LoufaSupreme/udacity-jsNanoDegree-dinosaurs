@@ -1,7 +1,8 @@
 // GLOBAL VARIABLES ///////////////////////////////////
-let human = {};  // default blank human object
-let dinos = [];  // array to store dino objects
-const dinoData = [ // array of dinosaur details
+let human = {}; // default blank human object
+let dinos = []; // array to store dino objects
+const dinoData = [
+  // array of dinosaur details
   {
     species: "Triceratops",
     weight: 13000,
@@ -101,21 +102,22 @@ class Dino {
   // compare human weight to dino weight and add to facts:
   compareWeight(human) {
     const ratio = Math.round(this.weight / human.weight);
-    const fact = `This dinosaur weighed ${ratio}x more than your fatass!`;
+    const fact = `This dinosaur weighed ${ratio}x more than you!`;
     this.facts.push(fact);
   }
 
   // compare human height to dino height and add to facts:
   compareHeight(human) {
     const ratio = Math.round(this.height / human.height);
-    let fact = '';
+    let fact = "";
     if (ratio === 0) {
-        fact = `This dino was ${human.height - this.height}in shorter than you...`;
-    }
-    else if (ratio === 1) {
-        fact = 'This dino was about the same height as you!';
+      fact = `This dino was ${
+        human.height - this.height
+      }in shorter than you...`;
+    } else if (ratio === 1) {
+      fact = "This dino was about the same height as you!";
     } else {
-        fact = `This dinosaur was ${ratio}x taller than you, shorty.`;
+      fact = `This dinosaur was ${ratio}x taller than you, shorty.`;
     }
     this.facts.push(fact);
   }
@@ -124,25 +126,24 @@ class Dino {
   compareDiet(human) {
     let fact = "";
     if (this.diet === human.diet) {
-      fact = "This MF ate the same shit as you do (and went extinct).";
-    } else if (this.diet === "Herbivore" && human.diet === "Carnivore") {
       fact =
-        "This guy showed respect for animals and just ate plants...unlike your selfish ass.";
+        "This dino ate the same stuff (meat and veg) as you do (and went extinct).";
+    } else if (this.diet === "Herbivore" && human.diet === "Carnivore") {
+      fact = "This guy showed respect for animals and just ate plants...";
     } else if (this.diet === "Carnivore" && human.diet === "Herbivore") {
-      fact = "This MF ate meat like a man, unlike your bitch-ass.";
+      fact = "This dino ate meat like a man, unlike you, punk.";
     } else if (human.diet == "Omnivore") {
       if (this.diet === "Carnivore") {
         fact =
-          "This guy just ate meat and didn't fuck with plants like you do sometimes.";
+          "This guy just ate meat and didn't mess with plants like you do sometimes.";
       } else {
         fact =
-          "This guy just ate plants and didn't fuck with meat like you do sometimes.";
+          "This guy just ate plants and didn't mess with meat like you do sometimes.";
       }
     }
     this.facts.push(fact);
   }
 }
-
 
 // FUNCTIONS ////////////////////////////////////////
 function makeDinos() {
@@ -196,22 +197,27 @@ function hideForm() {
   formContainer.style.display = "none";
 }
 
+// auto scrolls down to see dino detail:
+function scrollDown() {
+  window.scrollTo(0,document.body.scrollHeight);
+}
+
 // show dino specs:
 function dinoDetail() {
-    const species = this.querySelector('h3').innerHTML;
-    const dinoIndex = dinos.findIndex(dino => {
-        return dino.species === species;
-    });
-    if (dinoIndex === -1) {
-        return;
-    }
-    const dino = dinos[dinoIndex];
-    const specBox = document.querySelector('#specs');
-    specBox.innerHTML = `
+  const species = this.querySelector("h3").innerHTML;
+  const dinoIndex = dinos.findIndex((dino) => {
+    return dino.species === species;
+  });
+  if (dinoIndex === -1) {
+    return;
+  }
+  const dino = dinos[dinoIndex];
+  const specBox = document.querySelector("#specs");
+  specBox.innerHTML = `
         <div class="specs-item">
             <h3>${dino.species}</h3>
             <ul>
-                <li>Typical Height: ${Math.floor(dino.height/12)}ft ${dino.height % 12}in</li>
+                <li>Typical Height: ${Math.floor(dino.height / 12)}ft ${dino.height % 12}in</li>
                 <li>Typical Weight: ${dino.weight}lbs</li>
                 <li>Location: ${dino.where}</li>
                 <li>Period: ${dino.when}</li>
@@ -227,24 +233,26 @@ function dinoDetail() {
             </div>
         </div>
     `;
-    // scale images to show relative size of dino:
-    const dinoPic = specBox.querySelector('#dino-container');
-    const humanPic = specBox.querySelector('#human-container');
-    const maxHeight = 100;
-    const ratio = human.height / dino.height;
-    if (dino.height > human.height) {
-        dinoPic.style.height = `${maxHeight}%`;
-        humanPic.style.height = `${maxHeight * ratio}%`;
-    } else {
-        humanPic.style.height = `${maxHeight}%`;
-        dinoPic.style.height = `${maxHeight / ratio}%`;
-    }
+  // scale images to show relative size of dino:
+  const dinoPic = specBox.querySelector("#dino-container");
+  const humanPic = specBox.querySelector("#human-container");
+  const maxHeight = 100;
+  const ratio = human.height / dino.height;
+  if (dino.height > human.height) {
+    dinoPic.style.height = `${maxHeight}%`;
+    humanPic.style.height = `${maxHeight * ratio}%`;
+  } else {
+    humanPic.style.height = `${maxHeight}%`;
+    dinoPic.style.height = `${maxHeight / ratio}%`;
+  }
+  // scroll down to dino detail box:
+  scrollDown();
 }
 
 // displays grid of dinosaurs
 function displayGrid() {
   // find grid element in html and reset inner html to blank:
-    let grid = document.querySelector("#grid");
+  let grid = document.querySelector("#grid");
   grid.innerHTML = "";
 
   // show the randomize facts button:
@@ -268,12 +276,12 @@ function displayGrid() {
         </div>
       `;
     }
-      // otherwise the grid item is a dino
-      // look up the dino index and create a grid tile
-        else {
-      let index = dinos.findIndex(dino => dino.index === i);
+    // otherwise the grid item is a dino
+    // look up the dino index and create a grid tile
+    else {
+      let index = dinos.findIndex((dino) => dino.index === i);
       let dino = dinos[index];
-      // create a random # b/w 0 and 6 to get a random fino fact
+      // create a random # b/w 0 and 6 to get a random dino fact
       let randNum = Math.floor(Math.random() * dino.facts.length);
       grid.innerHTML += `
             <div class='grid-item'>
@@ -285,13 +293,13 @@ function displayGrid() {
     }
   }
   // add event listeners to each grid item and style cursor:
-    const gridItems = document.querySelectorAll('.grid-item');
-    gridItems.forEach(item => {
-        if (item.dataset.species !== 'human') {
-            item.addEventListener('click', dinoDetail);
-            item.style.cursor = 'pointer';
-        }
-    });
+  const gridItems = document.querySelectorAll(".grid-item");
+  gridItems.forEach((item) => {
+    if (item.dataset.species !== "human") {
+      item.addEventListener("click", dinoDetail);
+      item.style.cursor = "pointer";
+    }
+  });
 }
 
 // reset array of dino objects to blank and repopulate it with new random data:
@@ -302,27 +310,27 @@ function randomizeFacts(e) {
 
 // grabs input data, updates human object, populates grid of dinos, hides input form and shows grid:
 function buttonClick(e) {
-    e.preventDefault();
-  
-    let name = document.querySelector("#name").value;
-    let height1 = parseInt(document.querySelector("#height1").value); // feet
-    let height2 = parseInt(document.querySelector("#height2").value); // inches
-    let weight = parseInt(document.querySelector("#weight").value); // lbs
-    let diet = document.querySelector("#diet").value;
-  
-    let height = height1 * 12 + height2;
-  
-    if (name === "" || isNaN(height) || isNaN(weight) || diet === "") {
-      alert("Fill out all the inputs you filthy animal...");
-    } else {
-      updateHuman(name, height, weight, diet);
-      hideForm();
-      makeDinos();
-      displayGrid();
-    }
-  }
+  e.preventDefault();
 
-  // EVENT LISTENERS ///////////////////////////////////////
+  let name = document.querySelector("#name").value;
+  let height1 = parseInt(document.querySelector("#height1").value); // feet
+  let height2 = parseInt(document.querySelector("#height2").value); // inches
+  let weight = parseInt(document.querySelector("#weight").value); // lbs
+  let diet = document.querySelector("#diet").value;
+
+  let height = height1 * 12 + height2;
+
+  if (name === "" || isNaN(height) || isNaN(weight) || diet === "") {
+    alert("Fill out all the inputs you filthy animal...");
+  } else {
+    updateHuman(name, height, weight, diet);
+    hideForm();
+    makeDinos();
+    displayGrid();
+  }
+}
+
+// EVENT LISTENERS ///////////////////////////////////////
 const btn = document.querySelector("#btn");
 btn.addEventListener("click", buttonClick);
 
